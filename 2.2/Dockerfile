@@ -36,6 +36,7 @@ RUN set -x \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV PATH /opt/logstash/bin:$PATH
+RUN plugin install logstash-filter-de_dot
 
 COPY docker-entrypoint.sh /
 

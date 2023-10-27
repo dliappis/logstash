@@ -202,7 +202,7 @@ Note that if a plugin is installed using the plugin manager `bin/logstash-plugin
 
 Built artifacts will be placed in the `LS_HOME/build` directory, and will create the directory if it is not already present.
 
-You can build a Logstash snapshot package as tarball or zip file
+You can build a Logstash snapshot package as tarball or zip file:
 
 ```sh
 ./gradlew assembleTarDistribution

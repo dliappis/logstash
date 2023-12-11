@@ -22,12 +22,10 @@ module ServiceTester
 
     include ::ServiceTester::SystemD
 
-    def installed?(hosts, package)
+    def installed?(package)
       stdout = ""
-      at(hosts, {in: :serial}) do |host|
-        cmd = sudo_exec!("dpkg -s  #{package}")
-        stdout = cmd.stdout
-      end
+      cmd = sudo_exec!("dpkg -s  #{package}")
+      stdout = cmd.stdout
       stdout.match(/^Package: #{package}$/)
       stdout.match(/^Status: install ok installed$/)
     end
@@ -44,32 +42,22 @@ module ServiceTester
       end
     end
 
-    def install(package, host = nil)
-      hosts = (host.nil? ? servers : Array(host))
-      errors = []
-      at(hosts, {in: :serial}) do |_|
-        cmd = sudo_exec!("dpkg -i --force-confnew #{package}")
-        if cmd.exit_status != 0
-          errors << cmd.stderr.to_s
-        end
-      end
-      raise InstallException.new(errors.join("\n")) unless errors.empty?
-    end
-
-    def uninstall(package, host = nil)
-      hosts = (host.nil? ? servers : Array(host))
-      at(hosts, {in: :serial}) do |_|
-        sudo_exec!("dpkg -r #{package}")
-        sudo_exec!("dpkg --purge #{package}")
+    def install(package)
+      cmd = sudo_exec!("dpkg -i --force-confnew #{package}")
+      if cmd.exit_status != 0
+        raise InstallException.new(cmd.stderr.to_s)
       end
     end
 
-    def removed?(hosts, package)
+    def uninstall(package)
+      sudo_exec!("dpkg -r #{package}")
+      sudo_exec!("dpkg --purge #{package}")
+    end
+
+    def removed?(package)
       stdout = ""
-      at(hosts, {in: :serial}) do |host|
-        cmd = sudo_exec!("dpkg -s #{package}")
-        stdout = cmd.stderr
-      end
+      cmd = sudo_exec!("dpkg -s #{package}")
+      stdout = cmd.stderr
       (
         stdout.match(/^Package `#{package}' is not installed and no info is available.$/) ||
         stdout.match(/^dpkg-query: package '#{package}' is not installed and no information is available$/)

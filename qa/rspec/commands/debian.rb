@@ -24,7 +24,7 @@ module ServiceTester
 
     def installed?(package)
       stdout = ""
-      cmd = sudo_exec!("dpkg -s  #{package}")
+      cmd = sudo_exec!("dpkg -s #{package}")
       stdout = cmd.stdout
       stdout.match(/^Package: #{package}$/)
       stdout.match(/^Status: install ok installed$/)

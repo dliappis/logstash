@@ -15,6 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
+$LOAD_PATH.unshift File.join(ROOT, 'logstash-core/lib')
+
 require_relative '../../rspec/matchers'
 
 def with_running_logstash_service(logstash)

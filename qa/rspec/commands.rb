@@ -172,6 +172,10 @@ module ServiceTester
       when hostfacts.name.include?("redhat")
         return RedhatCommands.new
         # TODO specifics about oracle, rocky etc
+      # TODO remove manjaro
+      when hostfacts.name.include?("manjaro")
+        return RedhatCommands.new
+        # TODO specifics about oracle, rocky etc
       end
     end
   end

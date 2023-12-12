@@ -16,7 +16,19 @@
 # under the License.
 
 require 'tempfile'
+require 'open3'
 require_relative "system_helpers"
+
+def sudo_exec!(cmd)
+  return execute_cmd("sudo #{cmd}")
+end
+
+def execute_cmd(cmd)
+  Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+    { :stdout => stdout.read.chomp, :stderr => stderr.read.chomp,
+      :exit_status => wait_thr.value.exitstatus }
+  end
+end
 
 module ServiceTester
   class InstallException < Exception; end

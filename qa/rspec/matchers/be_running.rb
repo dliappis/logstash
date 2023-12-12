@@ -19,6 +19,6 @@ require 'rspec/expectations'
 
 RSpec::Matchers.define :be_running do
   match do |subject|
-    subject.running?(subject.hosts, subject.name)
+    subject.running?(subject.name)
   end
 end

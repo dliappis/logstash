@@ -19,22 +19,52 @@ require 'tempfile'
 require 'open3'
 require_relative "system_helpers"
 
-def sudo_exec!(cmd)
-  return execute_cmd("sudo #{cmd}")
-end
+LS_BUILD_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'build'))
 
-def execute_cmd(cmd)
-  Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
-    { :stdout => stdout.read.chomp, :stderr => stderr.read.chomp,
-      :exit_status => wait_thr.value.exitstatus }
+class Command
+  def initialize()
+    @stdout, @stderr, @exit_status = nil
+    end
+  
+  def stdout
+    @stdout
+  end
+
+  def stderr
+    @stderr
+  end
+
+  def exit_status
+    @exit_status
+  end
+
+  def execute(cmdline)
+    Open3.popen3(cmdline) do |stdin, stdout, stderr, wait_thr|
+      @stdout = stdout.read.chomp
+      @stderr = stderr.read.chomp
+      @exit_status = wait_thr.value.exitstatus
+    end
   end
 end
+
+def sudo_exec!(cmd)
+  command = Command.new()
+  command.execute("sudo #{cmd}")
+  return command
+end
+
+# def execute_cmd(cmd)
+#   Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+#     { :stdout => stdout.read.chomp, :stderr => stderr.read.chomp,
+#       :exit_status => wait_thr.value.exitstatus }
+#   end
+# end
 
 module ServiceTester
   class InstallException < Exception; end
 
   class Base
-    LOCATION = "/logstash-build".freeze
+    LOCATION = LS_BUILD_PATH.freeze
     LOGSTASH_PATH = "/usr/share/logstash/".freeze
 
     def start_service(service)

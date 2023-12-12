@@ -25,7 +25,7 @@ require_relative "./commands/suse/sles-11"
 
 require "forwardable"
 require "open3"
-
+require 'pry'
 OS_RELEASE_PATH = "/etc/os-release"
 
 class HostFacts
@@ -90,6 +90,10 @@ module ServiceTester
 
     def hostname
       `hostname`.chomp
+    end
+
+    def hosts
+      [@hostname]
     end
 
     def name

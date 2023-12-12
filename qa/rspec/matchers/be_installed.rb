@@ -19,12 +19,12 @@ require 'rspec/expectations'
 
 RSpec::Matchers.define :be_installed do
   match do |subject|
-    subject.installed?(subject.hosts, subject.name)
+    subject.installed?(subject.name)
   end
 end
 
 RSpec::Matchers.define :be_removed do
   match do |subject|
-    subject.removed?(subject.hosts, subject.name)
+    subject.removed?(subject.name)
   end
 end

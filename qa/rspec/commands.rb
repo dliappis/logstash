@@ -33,6 +33,7 @@ class HostFacts
     @os_release = {}
     begin
       os_release_hash = File.foreach(OS_RELEASE_PATH).each_with_object({}) do |line, hash|
+        next if line.strip.empty?
         key, value = line.strip.split("=")
         @os_release[key] = value.tr('"', "")
       end
@@ -172,8 +173,7 @@ module ServiceTester
       when hostfacts.name.include?("opensuse")
         # TODO change to opensuse if needed
         return SuseCommands.new
-      when hostfacts.name.include?("centos")
-      when hostfacts.name.include?("redhat")
+      when hostfacts.name.include?("centos"), hostfacts.name.include?("redhat")
         return RedhatCommands.new
         # TODO specifics about oracle, rocky etc
       # TODO remove manjaro

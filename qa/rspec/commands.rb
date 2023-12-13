@@ -161,8 +161,7 @@ module ServiceTester
     end
   end
 
-  # Factory of commands used to select the right clients for a given type of OS and host name,
-  # this give you as much granularity as required.
+  # Factory of commands used to select the right clients for a given type of OS
   class CommandsFactory
     def self.fetch(hostfacts)
       case

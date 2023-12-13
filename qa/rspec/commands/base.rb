@@ -53,13 +53,6 @@ def sudo_exec!(cmd)
   return command
 end
 
-# def execute_cmd(cmd)
-#   Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
-#     { :stdout => stdout.read.chomp, :stderr => stderr.read.chomp,
-#       :exit_status => wait_thr.value.exitstatus }
-#   end
-# end
-
 module ServiceTester
   class InstallException < Exception; end
 

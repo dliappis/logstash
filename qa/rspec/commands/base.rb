@@ -120,7 +120,7 @@ module ServiceTester
     end
 
     def download(from, to)
-      run_command("wget #{from} -O #{to}")
+      run_command("curl -fsSL --retry 5 --retry-delay 5 #{from} -o #{to}")
     end
 
     def delete_file(path)

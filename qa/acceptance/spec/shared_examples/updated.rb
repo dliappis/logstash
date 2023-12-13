@@ -24,36 +24,24 @@ require          'logstash/version'
 require 'pry'
 ARTIFACTS_API = "https://artifacts-api.elastic.co/v1/versions"
 
-# TODO move to debian/redhat etc as they are arch specific ...
-def logstash_download_url(version, arch, artifact_type)
+def logstash_download_metadata(version, arch, artifact_type)
   filename = "logstash-#{version}-#{arch}.#{artifact_type}"
-  dest_filename = "logstash-#{version}.#{artifact_type}"
-  return { url: "https://artifacts.elastic.co/downloads/logstash/#{filename}", dest: File.join(ROOT, 'qa', dest_filename) }
+  return { url: "https://artifacts.elastic.co/downloads/logstash/#{filename}", dest: File.join(ROOT, 'qa', filename) }
 end
 
-def latest_logstash_version(target_version="7.17")
+def fetch_latest_logstash_release_version(branch)
   uri = URI(ARTIFACTS_API)
 
   response = Net::HTTP.get(uri)
   versions_data = JSON.parse(response)
 
-  filtered_versions = versions_data["versions"].select { |v| v.start_with?(target_version) }
+  filtered_versions = versions_data["versions"].select { |v| v.start_with?(branch) }
 
   return filtered_versions.max_by { |v| Gem::Version.new(v) }
 end
 
-def download_logstash_artifact(version, arch, artifact_type)
-  url, dest = logstash_download_url(version, arch, artifact_type).values_at(:url, :dest)
-
-  Open3.popen3("curl -fsSL --retry 5 --retry-delay 5 #{url} -o #{dest}") do |stdin, stdout, stderr, wait_thr|
-    error = stderr.read
-    raise "Error: #{error} while downloading artifact from #{url}" unless error.empty?
-  end
-end
-
-
 # This test checks if the current package could used to update from the latest version released.
-RSpec.shared_examples "updated" do |logstash|
+RSpec.shared_examples "updated" do |logstash, from_release_branch|
   before(:all) {
     #unset to force it using bundled JDK to run LS
     logstash.run_command("unset LS_JAVA_HOME")
@@ -65,10 +53,11 @@ RSpec.shared_examples "updated" do |logstash|
   end
 
   before(:each) do    
-    # TODO after this is moved elsewhere e.g. in debian, amd64 and deb aren't needed anymore
-    download_logstash_artifact(latest_logstash_version(), "amd64", "deb")
-    options = {:version => latest_logstash_version(), :snapshot => false, :base => "./", :skip_jdk_infix => true }
-    logstash.install(options) # make sure latest version is installed
+    latest_logstash_release_version = fetch_latest_logstash_release_version(from_release_branch)
+    url, dest = logstash_download_metadata(latest_logstash_release_version, logstash.client.architecture_extension, logstash.client.package_extension).values_at(:url, :dest)
+    logstash.download(url, dest)
+    options = {:version => latest_logstash_release_version, :snapshot => false, :base => "./", :skip_jdk_infix => false }
+    logstash.install(options)
   end
 
   it "can be updated and run on #{logstash.hostname}" do

@@ -24,7 +24,7 @@ module ServiceTester
 
     def installed?(package)
       stdout = ""
-      cmd = exec!("yum list installed  #{package}")
+      cmd = sudo_exec!("yum list installed #{package}")
       stdout = cmd.stdout
       stdout.match(/^Installed Packages$/)
       stdout.match(/^logstash.noarch/) || stdout.match(/^logstash.#{architecture_extension}/)

@@ -170,16 +170,10 @@ module ServiceTester
       when hostfacts.name.include?("debian")
         return DebianCommands.new
       when hostfacts.name.include?("opensuse")
-        # TODO change to opensuse if needed
-        return SuseCommands.new
+        return OpenSuseCommands.new
       when hostfacts.name.include?("centos"), hostfacts.name.include?("redhat")
         return RedhatCommands.new
-        # TODO specifics about oracle, rocky etc
-      # TODO remove manjaro
-      when hostfacts.name.include?("manjaro")
-        return RedhatCommands.new
-        # TODO specifics about oracle, rocky etc
-      end
+      # TODO specifics about oracle, rocky etc if needed
     end
   end
 end

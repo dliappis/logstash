@@ -22,7 +22,7 @@ module ServiceTester
 
     def installed?(package)
       stdout = ""
-      cmd = sudo_exec!("zypper search #{package}")
+      cmd = sudo_exec!("zypper --no-refresh info #{package}")
       stdout = cmd.stdout
       stdout.match(/^i | logstash | An extensible logging pipeline | package$/)
     end
@@ -48,7 +48,7 @@ module ServiceTester
 
     def removed?(package)
       stdout = ""
-      cmd    = sudo_exec!("zypper info #{package}")
+      cmd    = sudo_exec!("zypper --no-refresh info #{package}")
       stdout = cmd.stdout
       stdout.match(/package \'#{package}\' not found/)
     end

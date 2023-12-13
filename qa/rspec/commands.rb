@@ -19,6 +19,7 @@ require_relative "./commands/debian"
 require_relative "./commands/ubuntu"
 require_relative "./commands/redhat"
 require_relative "./commands/suse"
+require_relative "./commands/opensuse"
 require_relative "./commands/centos/centos-6"
 require_relative "./commands/oel/oel-6"
 require_relative "./commands/suse/sles-11"
@@ -174,6 +175,7 @@ module ServiceTester
       when hostfacts.name.include?("centos"), hostfacts.name.include?("redhat")
         return RedhatCommands.new
       # TODO specifics about oracle, rocky etc if needed
+      end
     end
   end
 end

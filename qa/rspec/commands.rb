@@ -174,7 +174,7 @@ module ServiceTester
         return OpenSuseCommands.new
       when hostfacts.name.include?("red hat")
         return RedhatCommands.new
-      when hostfacts.id_like.include?("rhel")
+      when hostfacts.id_like.include?("rhel"), hostfacts.id_like.include?("fedora")
         # covers Oracle Linux, CentOS, Rocky Linux, Amazon Linux
         # TODO add specific commands (e.g. to use dnf instead of yum where applicable)
         return RedhatCommands.new

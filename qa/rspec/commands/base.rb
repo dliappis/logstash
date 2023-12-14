@@ -57,7 +57,7 @@ module ServiceTester
   class InstallException < Exception; end
 
   class Base
-    LOCATION = LS_BUILD_PATH.freeze
+    LOCATION = ENV.fetch('LS_ARTIFACTS_PATH', LS_BUILD_PATH.freeze)
     LOGSTASH_PATH = "/usr/share/logstash/".freeze
 
     def start_service(service)

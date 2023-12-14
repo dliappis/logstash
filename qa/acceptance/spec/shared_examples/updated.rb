@@ -15,30 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'net/http'
-require 'json'
-require 'open3'
-
 require_relative '../spec_helper'
+require_relative '../../helpers'
 require          'logstash/version'
 require 'pry'
-ARTIFACTS_API = "https://artifacts-api.elastic.co/v1/versions"
-
-def logstash_download_metadata(version, arch, artifact_type)
-  filename = "logstash-#{version}-#{arch}.#{artifact_type}"
-  return { url: "https://artifacts.elastic.co/downloads/logstash/#{filename}", dest: File.join(ROOT, 'qa', filename) }
-end
-
-def fetch_latest_logstash_release_version(branch)
-  uri = URI(ARTIFACTS_API)
-
-  response = Net::HTTP.get(uri)
-  versions_data = JSON.parse(response)
-
-  filtered_versions = versions_data["versions"].select { |v| v.start_with?(branch) }
-
-  return filtered_versions.max_by { |v| Gem::Version.new(v) }
-end
 
 # This test checks if the current package could used to update from the latest version released.
 RSpec.shared_examples "updated" do |logstash, from_release_branch|

@@ -25,7 +25,7 @@ task :default => :spec
 
 namespace :qa do
   namespace :acceptance do
-    desc "Run all acceptance"
+    desc "Run all acceptance tests"
     task :all do
       exit(RSpec::Core::Runner.run([Rake::FileList["acceptance/spec/lib/**/*_spec.rb"]]))
     end

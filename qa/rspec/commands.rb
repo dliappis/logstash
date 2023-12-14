@@ -172,7 +172,7 @@ module ServiceTester
         return DebianCommands.new
       when hostfacts.name.include?("opensuse")
         return OpenSuseCommands.new
-      when hostfacts.name.include?("centos"), hostfacts.name.include?("redhat")
+      when hostfacts.name.include?("red hat"), hostfacts.id_like.include?("rhel")
         return RedhatCommands.new
       # TODO specifics about oracle, rocky etc if needed
       end

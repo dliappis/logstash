@@ -172,7 +172,7 @@ module ServiceTester
         return DebianCommands.new
       when hostfacts.name.include?("opensuse")
         return OpenSuseCommands.new
-      when hostfacts.name.include?("red hat")hostfacts.id_like.include?("rhel")
+      when hostfacts.name.include?("red hat")
         return RedhatCommands.new
       when hostfacts.id_like.include?("rhel")
         # covers Oracle Linux, CentOS, Rocky Linux, Amazon Linux

@@ -49,32 +49,40 @@ class HostFacts
 
   def orig_name
     # e.g. openSUSE Leap
-    return @os_release["NAME"].downcase
+    @os_release["NAME"]
   end
 
   def name
     # e.g. opensuse leap
-    return @os_release["NAME"].downcase
+    @os_release["NAME"].downcase
   end
 
   def id
     # e.g. ubuntu for Ubuntu 22.04, or debian for Debian 11, or centos for centos-7
-    return @os_release["ID"].downcase
+    @os_release["ID"].downcase
   end
 
   def id_like
     # e.g. "rhel fedora" for centos-7
-    return @os_release["ID_LIKE"].downcase
+    @os_release["ID_LIKE"].downcase
   end
 
   def version_codename
     # e.g. jammy for Ubuntu 22.04, or bullseye for Debian 11, unset for RHEL
-    return @os_release["VERSION_CODENAME"].downcase
+    @os_release["VERSION_CODENAME"].downcase
   end
 
   def version_id
     # e.g. 22.04 for Ubuntu jammy, 11 for Debian Bullseye, 8.x for RHEL 8 distros
-    return @os_release["VERSION_ID"].downcase
+    @os_release["VERSION_ID"].downcase
+  end
+
+  def human_name
+    if self.version_id
+      "#{self.orig_name} #{self.version_id}"
+    else
+      orig_name
+    end
   end
 end
 
@@ -97,6 +105,10 @@ module ServiceTester
 
     def hostname
       `hostname`.chomp
+    end
+
+    def human_name
+      @hostfacts.human_name
     end
 
     def hosts
@@ -183,7 +195,7 @@ module ServiceTester
         # covers Oracle Linux, CentOS, Rocky Linux, Amazon Linux
         # TODO add specific commands (e.g. to use dnf instead of yum where applicable)
         return RedhatCommands.new
-    end
+      end
     end
   end
 end

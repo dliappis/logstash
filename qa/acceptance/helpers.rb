@@ -28,10 +28,28 @@ end
 def fetch_latest_logstash_release_version(branch)
   uri = URI(ARTIFACTS_API)
 
-  response = Net::HTTP.get(uri)
+  response = retryable_http_get(uri)
   versions_data = JSON.parse(response)
 
   filtered_versions = versions_data["versions"].select { |v| v.start_with?(branch) }
 
   return filtered_versions.max_by { |v| Gem::Version.new(v) }
+end
+
+def retryable_http_get(uri, max_retries=5, retry_wait=10)
+  count = 0
+
+  begin
+    response = Net::HTTP.get(uri)
+  rescue StandardError => e
+    count += 1
+    if count < max_retries
+      puts "Retry attempt #{count}/#{max_retries}: #{e.message}"
+      sleep(retry_wait)
+      retry
+    else
+      puts "Exhausted all attempts trying to get from #{uri}."
+      raise e
+    end
+  end
 end

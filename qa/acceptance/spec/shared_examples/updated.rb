@@ -32,7 +32,7 @@ RSpec.shared_examples "updated" do |logstash, from_release_branch|
     logstash.uninstall #remove the package to keep uniform state
   end
 
-  before(:each) do    
+  before(:each) do
     latest_logstash_release_version = fetch_latest_logstash_release_version(from_release_branch)
     url, dest = logstash_download_metadata(latest_logstash_release_version, logstash.client.architecture_extension, logstash.client.package_extension).values_at(:url, :dest)
     logstash.download(url, dest)

@@ -47,6 +47,11 @@ class HostFacts
     end
   end
 
+  def orig_name
+    # e.g. openSUSE Leap
+    return @os_release["NAME"].downcase
+  end
+
   def name
     # e.g. opensuse leap
     return @os_release["NAME"].downcase

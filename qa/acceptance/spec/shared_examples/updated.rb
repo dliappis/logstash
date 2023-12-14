@@ -40,8 +40,7 @@ RSpec.shared_examples "updated" do |logstash, from_release_branch|
     logstash.install(options)
   end
 
-  it "can be updated and run on #{logstash.hostname}" do
-    pending('Cannot install on OS') if logstash.hostname == 'oel-6'
+  it "can be updated and run on [#{logstash.orig_name}]" do
     expect(logstash).to be_installed
     # Performing the update
     logstash.install({:version => LOGSTASH_VERSION})
